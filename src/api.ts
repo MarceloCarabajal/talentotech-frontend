@@ -5,7 +5,18 @@ const API_BASE = "http://localhost:9090";
 function mapProductoFromApi(apiProd: any) {
   return {
     ...apiProd,
-    stock: apiProd.cantidadEnStock ?? 0, // Si es null/undefined, pone 0
+    cantidadEnStock: apiProd.cantidadEnStock ?? 0, // Si es null/undefined, pone 0
+  };
+}
+
+// Mapeo de producto frontend a DTO del backend
+function mapProductoToRequest(producto: any) {
+  return {
+    nombre: producto.nombre,
+    descripcion: producto.descripcion,
+    precio: producto.precio,
+    categoriaId: producto.categoria?.id || producto.categoriaId,
+    cantidadEnStock: producto.cantidadEnStock || producto.stock || 0,
   };
 }
 
@@ -29,26 +40,35 @@ export async function getProductoByName(nombre: string) {
 }
 
 export async function createProducto(producto: any) {
-  // Mapea stock a cantidadEnStock
-  const payload = { ...producto, cantidadEnStock: producto.stock };
-  delete payload.stock;
+  const payload = mapProductoToRequest(producto);
   const res = await fetch(`${API_BASE}/productos`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
+  
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || `Error al crear producto: ${res.status}`);
+  }
+  
   const data = await res.json();
   return mapProductoFromApi(data);
 }
 
 export async function updateProducto(id: number, producto: any) {
-  const payload = { ...producto, cantidadEnStock: producto.stock };
-  delete payload.stock;
+  const payload = mapProductoToRequest(producto);
   const res = await fetch(`${API_BASE}/productos/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
+  
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || `Error al actualizar producto: ${res.status}`);
+  }
+  
   const data = await res.json();
   return mapProductoFromApi(data);
 }

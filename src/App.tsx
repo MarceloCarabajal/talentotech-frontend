@@ -49,13 +49,17 @@ function App() {
   };
 
   const handleFormSubmit = async (data: Partial<Producto>) => {
-    if (editing) {
-      await updateProducto(editing.id, data);
-    } else {
-      await createProducto(data);
+    try {
+      if (editing) {
+        await updateProducto(editing.id, data);
+      } else {
+        await createProducto(data);
+      }
+      setShowForm(false);
+      getAllProductos().then(setProductos);
+    } catch (error) {
+      alert(`Error: ${error instanceof Error ? error.message : 'Error desconocido'}`);
     }
-    setShowForm(false);
-    getAllProductos().then(setProductos);
   };
 
   const handleDelete = async (id: number) => {

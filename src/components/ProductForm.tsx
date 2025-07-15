@@ -14,12 +14,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ initial = {}, categorias, onS
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setForm(f => ({ ...f, [name]: name === "precio" || name === "stock" ? Number(value) : value }));
+    setForm(f => ({ 
+      ...f, 
+      [name]: name === "precio" || name === "cantidadEnStock" ? Number(value) : value 
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.nombre || !form.precio || !form.categoria || form.stock == null) {
+    if (!form.nombre || !form.precio || !form.categoria || form.cantidadEnStock == null) {
       setError("Todos los campos son obligatorios");
       return;
     }
@@ -27,7 +30,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initial = {}, categorias, onS
       setError("El precio debe ser mayor a 0");
       return;
     }
-    if (form.stock < 0) {
+    if (form.cantidadEnStock < 0) {
       setError("El stock no puede ser negativo");
       return;
     }
@@ -46,8 +49,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initial = {}, categorias, onS
         <option value="">Selecciona categoría</option>
         {categorias.map(cat => <option key={cat.id} value={cat.id}>{cat.nombre}</option>)}
       </select>
-      <input name="imagen" placeholder="URL Imagen" value={form.imagen || ""} onChange={handleChange} />
-      <input name="stock" type="number" placeholder="Stock" value={form.stock || ""} onChange={handleChange} />
+      <input name="imagen" placeholder="URL Imagen (opcional)" value={form.imagen || ""} onChange={handleChange} />
+      <input name="cantidadEnStock" type="number" placeholder="Stock" value={form.cantidadEnStock || ""} onChange={handleChange} />
       <button type="submit">Guardar</button>
       <button type="button" onClick={onCancel}>Cancelar</button>
     </form>

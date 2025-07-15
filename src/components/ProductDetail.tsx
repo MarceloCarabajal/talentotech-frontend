@@ -16,7 +16,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ producto, onClose }) => {
       <p><b>Descripción:</b> {producto.descripcion}</p>
       <p><b>Precio:</b> ${producto.precio}</p>
       <p><b>Categoría:</b> {producto.categoria?.nombre}</p>
-      <p><b>Stock:</b> {producto.stock}</p>
+      <p><b>Stock:</b> {producto.cantidadEnStock}</p>
       <img src={producto.imagen} alt={producto.nombre} style={{maxWidth:200}} />
       <br />
       <button onClick={onClose}>Cerrar</button>
